@@ -12,7 +12,7 @@ TARGET		:= 	$(notdir $(CURDIR))
 PLGINFO 	:= 	CTRPluginFramework.plgInfo
 BUILD		:= 	Build
 INCLUDES	:= 	Includes
-LIBDIRS		:=  $(CURDIR)/libCTRPluginFramework.a $(CTRULIB) $(PORTLIBS)
+LIBDIRS		:=  $(TOPDIR)/lib/CTRPluginFramework.a
 SOURCES 	:= 	Sources
 
 # cmake オプション -mtp=soft
