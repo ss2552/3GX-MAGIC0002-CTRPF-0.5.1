@@ -12,7 +12,7 @@ PLGINFO 	:= 	CTRPluginFramework.plgInfo
 
 BUILD		:= 	Build
 INCLUDES	:= 	Includes
-LIBDIRS		:= 	$(TOPDIR)
+LIBDIRS		:= 	Lib
 SOURCES 	:= 	Sources
 
 #---------------------------------------------------------------------------------
@@ -54,11 +54,9 @@ SFILES			:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 
 export LD 		:= 	$(CXX)
 export OFILES	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
-export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I $(CURDIR)/$(dir) ) \
-					$(foreach dir,$(LIBDIRS),-I $(dir)/include) \
-					-I $(CURDIR)/$(BUILD)
+export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I $(CURDIR)/$(dir) ) -I $(CURDIR)/$(BUILD)
 
-export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L $(dir)/Lib)
+export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L $(dir))
 
 .PHONY: $(BUILD) all
 
