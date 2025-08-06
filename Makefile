@@ -35,11 +35,6 @@ LDFLAGS		:= -T $(TOPDIR)/3ds.ld $(ARCH) -Os -Wl,-Map,$(notdir $*.map),--gc-secti
 LIBS		:= -lCTRPluginFramework
 
 #---------------------------------------------------------------------------------
-# no real need to edit anything past this point unless you need to add additional
-# rules for different file extensions
-#---------------------------------------------------------------------------------
-ifneq ($(BUILD),$(notdir $(CURDIR)))
-#---------------------------------------------------------------------------------
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
 export TOPDIR	:=	$(CURDIR)
@@ -61,13 +56,13 @@ export LIBPATHS	:=	$(CURDIR)/$(LIBDIRS)/libCTRPluginFramework.a
 #---------------------------------------------------------------------------------
 
 $(BUILD):
-	@[ -d $@ ] || mkdir -p $@
-	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
-#---------------------------------------------------------------------------------
+	@echo ビルド
+	[ -d $@ ] || mkdir -p $@
+	@cd $(BUILD)
 
-else
 
+	
 DEPENDS	:=	$(OFILES:.o=.d)
 
 #---------------------------------------------------------------------------------
@@ -84,13 +79,10 @@ $(OUTPUT).3gx : $(OFILES)
 
 #---------------------------------------------------------------------------------
 %.3gx: %.elf
-	@echo creating $(notdir $@)
-	@3gxtool -s $(word 1, $^) $(TOPDIR)/$(PLGINFO) $@
-#	@$(OBJCOPY) -O binary $(OUTPUT).elf $(TOPDIR)/objdump -S
-#	@3gxtool -s $(TOPDIR)/objdump $(TOPDIR)/$(PLGINFO) $@
+	@echo 3gxの生成 $(word 1, $^)
+#@3gxtool -s $(word 1, $^) $(TOPDIR)/$(PLGINFO) $@
+	@$(OBJCOPY) -O binary $@ $(TOPDIR)/objdump -S
+	@3gxtool -s $(TOPDIR)/objdump $(TOPDIR)/$(PLGINFO) $@
 #	@- rm $(TOPDIR)/objdump
 
 -include $(DEPENDS)
-
-#---------------------------------------------------------------------------------------
-endif
