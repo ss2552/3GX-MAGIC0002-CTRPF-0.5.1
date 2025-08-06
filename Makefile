@@ -51,15 +51,9 @@ export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I $(CURDIR)/$(dir) ) -I $(CURDIR)/$
 
 export LIBPATHS	:=	$(CURDIR)/$(LIBDIRS)/libCTRPluginFramework.a
 
-.PHONY: $(BUILD)
+.PHONY: $(OUTPUT).3gx $(BUILD)
 
 #---------------------------------------------------------------------------------
-
-$(BUILD):
-
-	@echo ビルド
-	@cd $(TOPDIR)/$(BUILD)
-	@ls
 
 	
 DEPENDS	:=	$(OFILES:.o=.d)
@@ -74,10 +68,14 @@ $(OUTPUT).3gx : $(OFILES)
 %.bin.o	:	%.bin
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
+	@pwd
+	@cd $(BUILD)
+	@pwd
 	@$(bin2o)
 
 #---------------------------------------------------------------------------------
 %.3gx: %.elf
+	@ls
 	@echo 3gxの生成 $(word 1, $^)
 #@3gxtool -s $(word 1, $^) $(TOPDIR)/$(PLGINFO) $@
 	@$(OBJCOPY) -O binary $@ $(TOPDIR)/objdump -S
