@@ -3,7 +3,7 @@
 TOPDIR 		?=	$(CURDIR)
 DKP_RULES	:=	$(TOPDIR)/devkitpro_0_6_1
 
-include $(DKP_RULES)/3ds_rules
+include $(DKP_RULES)/base_rules
 
 TARGET		:= 	$(notdir $(CURDIR))
 BUILD		:= 	Build
