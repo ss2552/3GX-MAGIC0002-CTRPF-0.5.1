@@ -5,7 +5,8 @@ $(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>dev
 endif
 
 TOPDIR 		?= 	$(CURDIR)
-include $(DEVKITARM)/3ds_rules
+DKP_RULES	:=	 $(TOPDIR)/devkitpro_0_6_1
+include		$(DKP_RULES)/3ds_rules
 
 TARGET		:= 	CTRPluginFramework
 PLGINFO 	:= 	CTRPluginFramework.plgInfo
@@ -55,18 +56,13 @@ export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I $(CURDIR)/$(dir) ) -I $(CURDIR)/$
 
 export LIBPATHS	:=	$(CURDIR)/$(LIBDIRS)/libCTRPluginFramework.a
 
-.PHONY: $(BUILD) all
+.PHONY: $(BUILD)
 
 #---------------------------------------------------------------------------------
-all: $(BUILD)
 
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
-
-#---------------------------------------------------------------------------------
-
-re: all
 
 #---------------------------------------------------------------------------------
 
