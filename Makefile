@@ -35,8 +35,6 @@ LIBDIRS		:= 	$(CTRULIB)
 # no real need to edit anything past this point unless you need to add additional
 # rules for different file extensions
 #---------------------------------------------------------------------------------
-ifneq ($(BUILD),$(notdir $(CURDIR)))
-#---------------------------------------------------------------------------------
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
 export LIBOUT	:=  $(CURDIR)/lib$(TARGET).a
