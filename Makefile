@@ -75,9 +75,10 @@ $(LIBOUT):	$(filter-out $(EXCLUDE), $(OFILES))
 	@$(bin2o)
 
 %.elf:
- 	@echo linking $(notdir $@)
- 	@$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
- 	@$(NM) -CSn $@ > $(notdir $*.lst)
+	@echo linking $(notdir $@)
+	@$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
+	@$(NM) -CSn $@ > $(notdir $*.lst)
+	@ls -a
 #---------------------------------------------------------------------------------
 %.3gx: %.elf
 	@echo creating $(notdir $@)
