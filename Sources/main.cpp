@@ -1,4 +1,4 @@
-#include "3ds.h"
+#include <"3ds.h">
 #include "csvc.h"
 #include "CTRPluginFramework.hpp"
 
