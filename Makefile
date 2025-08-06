@@ -58,9 +58,8 @@ export LIBPATHS	:=	$(CURDIR)/$(LIBDIRS)/libCTRPluginFramework.a
 $(BUILD):
 
 	@echo ビルド
-	[ -d $@ ] || mkdir -p $@
-	@cd $(BUILD)
-
+	@cd $(TOPDIR)/$(BUILD)
+	@ls
 
 	
 DEPENDS	:=	$(OFILES:.o=.d)
