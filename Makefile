@@ -32,7 +32,9 @@ CXXFLAGS  := -Os -mword-relocations \
 %.o: %.s
 	@echo $(notdir $<)
 	@arm-none-eabi-gcc -MMD -MP -MF $*.d -x assembler-with-cpp $(_EXTRADEFS) $(ARCH) -c $< -o $@ $(ERROR_FILTER)
-
+	@echo "start"
+	@ls -a
+	@echo "end"
 # C++ファイルのビルドルール
 %.o: %.cpp
 	@echo $(notdir $<)
