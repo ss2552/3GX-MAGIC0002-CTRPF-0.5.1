@@ -2,11 +2,12 @@ name: コンパイル
 
 on:
   push:
-    branches: objects
+    branches: main
 jobs:
   build:
 
     runs-on: ubuntu-latest
+    container: devkitpro/devkitarm
     
     steps:
     - uses: actions/checkout@v4
