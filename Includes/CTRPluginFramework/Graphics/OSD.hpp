@@ -7,7 +7,7 @@
 
 namespace CTRPluginFramework
 {
-    using GSPFormat = GSPGPU_FramebufferFormats;
+    using GSPFormat = GSPGPU_FramebufferFormat;
 
     class Screen
     {
