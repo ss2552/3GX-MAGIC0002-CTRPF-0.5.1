@@ -2,7 +2,7 @@
 #define CTRPLUGINFRAMEWORK_OSD_HPP
 
 #include "CTRPluginFramework/Graphics/Color.hpp"
-#include "ctrulib/services/gspgpu.h"
+#include "3ds/services/gspgpu.h"
 #include <string>
 
 namespace CTRPluginFramework
