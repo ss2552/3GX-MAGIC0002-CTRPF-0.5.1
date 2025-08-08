@@ -24,7 +24,7 @@ ARCH      := -march=armv6k -mlittle-endian -mtune=mpcore -mfloat-abi=hard
 CXXFLAGS  := -Os -mword-relocations \
             -fomit-frame-pointer -ffunction-sections -fno-strict-aliasing \
             $(ARCH) \
-            -I Includes -I Includes\ctrulib \
+            -I Includes -I Includes/ctrulib -I Includes/ctrulib/allocator -I Includes/ctrulib/gpu -I Includes/ctrulib/services -I Includes/ctrulib/system -I Includes/ctrulib/util/utf -I Includes/ctrulib/util/rbtree \
             -DARM11 -D__3DS__ \
             -fno-rtti -fno-exceptions -std=gnu++11
 
