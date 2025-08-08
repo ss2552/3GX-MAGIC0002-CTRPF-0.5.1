@@ -7,7 +7,7 @@ endif
 TOPDIR 		?= 	$(CURDIR)
 include $(DEVKITARM)/3ds_rules
 
-CTRPFLIB	?=	Lib/libCTRPluginFramework.a
+CTRPFLIB	?=	Lib
 
 TARGET		:= 	$(notdir $(CURDIR))
 PLGINFO 	:= 	CTRPluginFramework.plgInfo
@@ -31,7 +31,7 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
 ASFLAGS		:=	$(ARCH)
 LDFLAGS		:= -T $(TOPDIR)/3gx.ld $(ARCH) -Os -Wl,--gc-sections,--strip-discarded,--strip-debug
 
-LIBS		:= -lCTRPluginFramework -lctru
+LIBS		:= -lctrpf -lctru
 LIBDIRS		:= 	$(CTRULIB) $(PORTLIBS)
 
 #---------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I $(CURDIR)/$(dir) ) \
 
 export LIBPATHS	:=	-L $(CTRPFLIB)
 
-.PHONY: $(BUILD) clean all
+.PHONY: $(BUILD) all
 
 #---------------------------------------------------------------------------------
 all: $(BUILD)
@@ -70,39 +70,18 @@ $(BUILD):
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
 #---------------------------------------------------------------------------------
-clean:
-	@echo clean ... 
-	@rm -fr $(BUILD) $(OUTPUT).3gx $(OUTPUT).elf
-
-re: clean all
-
-#---------------------------------------------------------------------------------
 
 else
-
-DEPENDS	:=	$(OFILES:.o=.d)
 
 #---------------------------------------------------------------------------------
 # main targets
 #---------------------------------------------------------------------------------
 $(OUTPUT).3gx : $(OFILES)
 
-#---------------------------------------------------------------------------------
-# you need a rule like this for each extension you use as binary data
-#---------------------------------------------------------------------------------
-%.bin.o	:	%.bin
-#---------------------------------------------------------------------------------
-	@echo $(notdir $<)
-	@$(bin2o)
-
-#---------------------------------------------------------------------------------
-.PRECIOUS: %.elf
 %.3gx: %.elf
 #---------------------------------------------------------------------------------
 	@echo creating $(notdir $@)
 	@3gxtool -s $(word 1, $^) $(TOPDIR)/$(PLGINFO) $@
-
--include $(DEPENDS)
 
 #---------------------------------------------------------------------------------
 endif
