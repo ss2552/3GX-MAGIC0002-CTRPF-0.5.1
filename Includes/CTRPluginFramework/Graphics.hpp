@@ -1,13 +1,7 @@
-#ifndef CTRPLUGINFRAMEWORK_HPP
-#define CTRPLUGINFRAMEWORK_HPP
+#ifndef CTRPLUGINFRAMEWORK_GRAPHICS_HPP
+#define CTRPLUGINFRAMEWORK_GRAPHICS_HPP
 
-#include "types.h"
-
-using CallbackPointer = void (*)(void);
-
-#include "CTRPluginFramework/Graphics.hpp"
-#include "CTRPluginFramework/Menu.hpp"
-#include "CTRPluginFramework/System.hpp"
-#include "CTRPluginFramework/Utils.hpp"
+#include "CTRPluginFramework/Graphics/Color.hpp"
+#include "CTRPluginFramework/Graphics/OSD.hpp"
 
 #endif
