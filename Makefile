@@ -6,14 +6,14 @@ export PATH	:=	$(DEVKITPATH)/tools/bin:$(DEVKITPATH)/devkitARM/bin:$(DEVKITPRO)/
 
 # ソースディレクトリのリスト
 SOURCES		:=	Sources \
-    Lib Lib\ctrulib Lib\ctrulib\allocator Lib\ctrulib\gpu Lib\ctrulib\services Lib\ctrulib\system Lib\ctrulib\util\utf Lib\ctrulib\util\rbtree
+	Lib Lib/ctrulib Lib/ctrulib/allocator Lib/ctrulib/gpu Lib/ctrulib/services Lib/ctrulib/system Lib/ctrulib/util/utf Lib/ctrulib/util/rbtree
 # 各ディレクトリ内の.cppファイルを取得
-CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
+CPPFILES	:=	$(foreach dir,$(SOURCES),$(wildcard $(dir)/*.cpp))
 # 各ディレクトリ内の.sファイルを取得
-SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
+SFILES		:=	$(foreach dir,$(SOURCES),$(wildcard $(dir)/*.s))
 
 # オブジェクトファイルと依存ファイルのリスト
-OFILES	:=	$(CPPFILES:.cpp=.o) $(SFILES:.c=.s)
+OFILES	:=	$(CPPFILES:.cpp=.o) $(SFILES:.s=.o)
 DEPENDS	:=	$(OFILES:.o=.d)
 
 .PHONY: all  # allターゲットはファイルではないことを明示
@@ -31,12 +31,12 @@ CXXFLAGS  := -Os -mword-relocations \
             -fno-rtti -fno-exceptions -std=gnu++11
 
 # アセンブリファイルのビルドルール
-$(OFILES).o: $(SFILES).s
+%.o: %.s
 	@echo $(notdir $<)
 	arm-none-eabi-gcc -MMD -MP -MF $*.d -x assembler-with-cpp $(_EXTRADEFS) $(ARCH) -c $< -o $@
 
 # C++ファイルのビルドルール
-$(OFILES).o: $(CPPFILES).cpp
+%.o: %.cpp
 	@echo $(notdir $<)
 	arm-none-eabi-gcc -MMD -MP -MF $*.d $(_EXTRADEFS) $(CXXFLAGS) -c $< -o $@
 
@@ -46,10 +46,10 @@ LIBPATHS	:=	-L Lib  # ライブラリパス
 LIBS		:=	-lCTRPluginFramework  # リンクするライブラリ
 
 # ELFファイルのリンク
-3gx0002ctrpf080.elf: $(OFILES).o
+3gx0002ctrpf080.elf: $(OFILES)
 	@echo linking $(notdir $@)
 	arm-none-eabi-gcc $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
-    
+	
 # 3GXファイルの生成
 3gx0002ctrpf080.3gx: 3gx0002ctrpf080.elf
 	@echo creating $(notdir $@)
