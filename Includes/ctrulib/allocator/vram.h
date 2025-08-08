@@ -3,9 +3,7 @@
  * @brief VRAM allocator.
  */
 #pragma once
-#ifdef __cplusplus
-extern "C" {
-#endif
+
 /**
  * @brief Allocates a 0x80-byte aligned buffer.
  * @param size Size of the buffer to allocate.
@@ -41,6 +39,3 @@ void vramFree(void* mem);
  * @return The current VRAM free space.
  */
 u32 vramSpaceFree(void);
-#ifdef __cplusplus
-}
-#endif
