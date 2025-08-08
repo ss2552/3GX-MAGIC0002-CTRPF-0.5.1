@@ -1,6 +1,6 @@
 #コメントアウトはgithub copilotを使用した
 
-include $(devkitARM)/base_tools
+include base_tools
 
 # ソースディレクトリのリスト
 SOURCES		:=	Sources \
@@ -31,12 +31,12 @@ CXXFLAGS  := -Os -mword-relocations \
 # アセンブリファイルのビルドルール
 %.o: %.s
 	@echo $(notdir $<)
-	@arm-none-eabi-gcc -MMD -MP -MF $*.d -x assembler-with-cpp $(_EXTRADEFS) $(ARCH) -c $< -o $@
+	@arm-none-eabi-gcc -MMD -MP -MF $*.d -x assembler-with-cpp $(_EXTRADEFS) $(ARCH) -c $< -o $@ $(ERROR_FILTER)
 
 # C++ファイルのビルドルール
 %.o: %.cpp
 	@echo $(notdir $<)
-	@arm-none-eabi-gcc -MMD -MP -MF $*.d $(_EXTRADEFS) $(CXXFLAGS) -c $< -o $@
+	@arm-none-eabi-gcc -MMD -MP -MF $*.d $(_EXTRADEFS) $(CXXFLAGS) -c $< -o $@ $(ERROR_FILTER)
 
 # リンカフラグ
 LDFLAGS		:=	-T 3ds.ld $(ARCH) -Os -Wl,-Map,$(notdir $*.map),--gc-sections
@@ -46,7 +46,7 @@ LIBS		:=	-lCTRPluginFramework  # リンクするライブラリ
 # ELFファイルのリンク
 3gx0002ctrpf080.elf: $(OFILES)
 	@echo linking $(notdir $@)
-	@arm-none-eabi-gcc $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
+	@arm-none-eabi-gcc $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@ $(ERROR_FILTER)
 	
 # 3GXファイルの生成
 3gx0002ctrpf080.3gx: 3gx0002ctrpf080.elf
