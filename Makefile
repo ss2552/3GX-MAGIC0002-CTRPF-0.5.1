@@ -1,8 +1,6 @@
 #コメントアウトはgithub copilotを使用した
 
-export SHELL := /usr/bin/env bash  # 使用するシェルを指定
-DEVKITPATH=$(shell echo "$(DEVKITPRO)" | sed -e 's/^\([a-zA-Z]\):/\/\1/')  # WindowsパスをUNIX形式に変換
-export PATH	:=	$(DEVKITPATH)/tools/bin:$(DEVKITPATH)/devkitARM/bin:$(DEVKITPRO)/portlibs/3ds/bin:$(PATH)  # 必要なツールのパスを追加
+include $(devkitARM)/base_tools
 
 # ソースディレクトリのリスト
 SOURCES		:=	Sources \
