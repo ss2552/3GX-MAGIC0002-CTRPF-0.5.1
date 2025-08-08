@@ -10,6 +10,8 @@ CPPFILES	:=	$(foreach dir,$(SOURCES),$(wildcard $(dir)/*.cpp))
 # 各ディレクトリ内の.sファイルを取得
 SFILES		:=	$(foreach dir,$(SOURCES),$(wildcard $(dir)/*.s))
 
+OUTPUT	:=	Build  # 出力ディレクトリ
+
 # オブジェクトファイルと依存ファイルのリスト
 OFILES	:=	$(CPPFILES:.cpp=.o) $(SFILES:.s=.o)
 
@@ -30,12 +32,12 @@ CXXFLAGS  := -Os -mword-relocations \
 # アセンブリファイルのビルドルール
 %.o: %.s
 	@echo $(CURDIR)/$(notdir $<)
-	@arm-none-eabi-gcc -MMD -MP -MF $(CURDIR)/$(@:.o=.d) -x assembler-with-cpp $(_EXTRADEFS) $(ARCH) -c $(CURDIR)/$< -o $(CURDIR)/$@ $(ERROR_FILTER)
+	@arm-none-eabi-gcc -MMD -MP -MF -x assembler-with-cpp $(_EXTRADEFS) $(ARCH) -c $< -o $(OUTPUT)/$@ $(ERROR_FILTER)
 
 # C++ファイルのビルドルール
 %.o: %.cpp
 	@echo $(CURDIR)/$(notdir $<)
-	@arm-none-eabi-g++ -MMD -MP -MF $(CURDIR)/$(@:.o=.d) $(_EXTRADEFS) $(CXXFLAGS) -c $(CURDIR)/$< -o $(CURDIR)/$@ $(ERROR_FILTER)
+	@arm-none-eabi-g++ -MMD -MP -MF $(_EXTRADEFS) $(CXXFLAGS) -c $< -o $(OUTPUT)/$@ $(ERROR_FILTER)
 
 # リンカフラグ
 LDFLAGS		:=	-T 3ds.ld $(ARCH) -Os -Wl,-Map,$(notdir $*.map),--gc-sections
@@ -45,10 +47,11 @@ LIBS		:=	-lCTRPluginFramework  # リンクするライブラリ
 # ELFファイルのリンク
 3gx0002ctrpf080.elf: $(OFILES)
 	@echo linking $(CURDIR)/$(notdir $@)
-	@arm-none-eabi-gcc $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $(CURDIR)/3gx0002ctrpf080.elf $(ERROR_FILTER)
+	@ls
+	@arm-none-eabi-gcc $(LDFLAGS) $< $(LIBPATHS) $(LIBS) -o $(OUTPUT)/3gx0002ctrpf080.elf $(ERROR_FILTER)
 	
 # 3GXファイルの生成
 3gx0002ctrpf080.3gx: 3gx0002ctrpf080.elf
 	@echo creating $(CURDIR)/$(notdir $@)
 #	@$(OBJCOPY) -O binary 3gx0002ctrpf080.elf objdump -S
-	@3gxtool -s $(CURDIR)/3gx0002ctrpf080.elf CTRPluginFramework.plgInfo $(CURDIR)/3gx0002ctrpf080.3gx
+	@3gxtool -s $(OUTPUT)/3gx0002ctrpf080.elf $(CURDIR)/CTRPluginFramework.plgInfo $(OUTPUT)/3gx0002ctrpf080.3gx
