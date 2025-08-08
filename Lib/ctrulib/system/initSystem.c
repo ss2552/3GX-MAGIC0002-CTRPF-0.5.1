@@ -2,7 +2,7 @@
 #include <sys/time.h>
 #include <string.h>
 
-#include <3DS.h>
+#include <3ds.h>
 
 u32 __tmp;
 u32 __ctru_heap;
