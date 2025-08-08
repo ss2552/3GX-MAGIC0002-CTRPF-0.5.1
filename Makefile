@@ -1,187 +1,47 @@
-.SUFFIXES:
+# use by 'github copilot'
 
-TOPDIR 		?=	$(CURDIR)
-DKP_RULES	:=	$(TOPDIR)/devkitpro_0_6_1
+# Nintendo 3DS Homebrew Makefile (cleaned and organized)
 
-include $(DKP_RULES)/base_rules
+# Set up toolchain paths
+export PATH := $(DEVKITPRO)/portlibs/3ds/bin:$(PATH)
 
-TARGET		:= 	$(notdir $(CURDIR))
-BUILD		:= 	Build
-INCLUDES	:= 	Includes
-SOURCES 	:= 	Sources
-				
-#---------------------------------------------------------------------------------
-# options for code generation
-#---------------------------------------------------------------------------------
-ARCH	:=	-march=armv6k -mlittle-endian -mtune=mpcore -mfloat-abi=hard
+include base_tools
 
-CFLAGS	:=	-g -Os -mword-relocations \
- 			-fomit-frame-pointer -ffunction-sections -fno-strict-aliasing \
-			$(ARCH)
+# Source and object files
+SOURCES   := Sources Lib/ctrulib
 
-CFLAGS		+=	$(INCLUDE) -DARM11 -D_3DS
-#-Wall -Wextra -Wdouble-promotion -Werror
+INCLUDES	:=	-I Includes -I Includes\ctrulib
 
-CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
+CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
+SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 
-ASFLAGS		:= -g $(ARCH)
-LDFLAGS		:= -T $(TOPDIR)/3ds.ld $(ARCH) -Os -Wl,-Map,$(notdir $*.map),--gc-sections,--strip-discarded,--strip-debug
-#LDFLAGS := -pie -specs=3dsx.specs -g $(ARCH) -mtp=soft -Wl,--section-start,.text=0x14000000 -Wl,--gc-sections
+# Architecture and compile options
+ARCH      := -march=armv6k -mlittle-endian -mtune=mpcore -mfloat-abi=hard
 
-LIBS 		:= 	-lctru -lCTRPluginFramework
-LIBDIRS		:= 	$(CTRULIB)
+CXXFLAGS  := -Os -mword-relocations \
+			-fomit-frame-pointer -ffunction-sections -fno-strict-aliasing \
+			$(ARCH) \
+			$(INCLUDES)
+			-DARM11 -D__3DS__ \
+			-fno-rtti -fno-exceptions -std=gnu++11
 
-#---------------------------------------------------------------------------------
-# no real need to edit anything past this point unless you need to add additional
-# rules for different file extensions
-#---------------------------------------------------------------------------------
+.PHONY: all
+all: 3gx0002ctrpf080.3gx
 
-export OUTPUT	:=	$(CURDIR)/$(TARGET)
-export LIBOUT	:=  $(CURDIR)/lib$(TARGET).a
-export TOPDIR	:=	$(CURDIR)
+$(OFILES).o: $(SFILES).s
+	$(SILENTMSG) $(notdir $<)
+	$(ADD_COMPILE_COMMAND) add $(CC) "-x assembler-with-cpp $(_EXTRADEFS) $(ARCH) -c $< -o $@" $<
+	$(SILENTCMD)$(CC) -MMD -MP -MF -x assembler-with-cpp $(_EXTRADEFS) $(ARCH) -c $< -o $@
 
-export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
-					$(foreach dir,$(DATA),$(CURDIR)/$(dir))
+$(OFILES).o: $(CPPFILES).cpp
+	$(SILENTMSG) $(notdir $<)
+	$(ADD_COMPILE_COMMAND) add $(CXX) "$(_EXTRADEFS) $(CXXFLAGS) -c $< -o $@" $<
+	$(SILENTCMD)$(CXX) -MMD -MP -MF $(_EXTRADEFS) $(CXXFLAGS) -c $< -o $@
 
-export DEPSDIR	:=	$(CURDIR)/$(BUILD)
-
-CPPFILES		:=	$(SOURCES)/main.cpp
-SFILES			:=	$(SOURCES)/bootloader.s
-
-export LD 		:= 	$(CXX)
-export OFILES	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
-
-export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I $(CURDIR)/$(dir) )
-
-export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L $(dir)/lib)
-
-.PHONY: $(OUTPUT).3gx
-
-DEPENDS	:=	$(OFILES:.o=.d)
-EXCLUDE := main.o
-
-
-$(OUTPUT).3gx : $(OFILES) $(LIBOUT)
-$(LIBOUT):	$(filter-out $(EXCLUDE), $(OFILES))
-
-#---------------------------------------------------------------------------------
-# you need a rule like this for each extension you use as binary data
-#---------------------------------------------------------------------------------
-%.bin.o	:	%.bin
-#---------------------------------------------------------------------------------
-	@echo $(notdir $<)
-	@$(bin2o)
-
-%.elf:
-	@echo linking $(notdir $@)
-	@$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
-	@$(NM) -CSn $@ > $(notdir $*.lst)
-	@ls -a
-#---------------------------------------------------------------------------------
-%.3gx: %.elf
-	@echo creating $(notdir $@)
-	@$(OBJCOPY) -O binary $@ $(TOPDIR)/objdump -S
-	@3gxtool.exe -s $(TOPDIR)/objdump $(TOPDIR)/CTRPluginFramework.plgInfo $@
-
--include $(DEPENDS)
-
-
-
-
-
-# .SUFFIXES:
-
-# ifeq ($(strip $(DEVKITARM)),)
-# $(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM")
-# endif
-
-# TOPDIR 		?= 	$(CURDIR)
-# DKP_RULES	:=	 $(TOPDIR)/devkitpro_0_6_1
-# include $(DKP_RULES)/base_rules
-
-# TARGET		:= 	CTRPluginFramework
-# PLGINFO 	:= 	CTRPluginFramework.plgInfo
-
-# BUILD		:= 	Build
-# INCLUDES	:= 	Includes
-# LIBDIRS		:= 	Lib
-# SOURCES 	:= 	Sources
-
-# #---------------------------------------------------------------------------------
-# # options for code generation
-# #---------------------------------------------------------------------------------
-# ARCH		:=	-march=armv6k -mlittle-endian -mtune=mpcore -mfloat-abi=hard 
-
-# CFLAGS		:=	-Os -mword-relocations \
-# 				-fomit-frame-pointer -ffunction-sections -fno-strict-aliasing \
-# 				$(ARCH)
-
-# CFLAGS		+=	$(INCLUDE) -DARM11 -D_3DS 
-
-# CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
-
-# ASFLAGS		:=	$(ARCH)
-# LDFLAGS		:= -T $(TOPDIR)/3ds.ld $(ARCH) -Os -Wl,-Map,$(notdir $*.map),--gc-sections 
-
-# LIBS		:= -lCTRPluginFramework -lctru
-
-# #---------------------------------------------------------------------------------
-
-# export OUTPUT	:=	$(CURDIR)/$(TARGET)
-# export TOPDIR	:=	$(CURDIR)
-
-# export DEPSDIR	:=	$(CURDIR)/$(BUILD)
-
-# CPPFILES		:=	$(CURDIR)/$(SOURCES)/main.cpp
-# SFILES			:=	$(CURDIR)/$(SOURCES)/bootloader.s
-# #	BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
-
-# export LD 		:= 	$(CXX)
-# export OFILES	:=	$(CPPFILES:.cpp=.o) $(SFILES:.s=.o)
-# export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I $(CURDIR)/$(dir) ) -I $(CURDIR)/$(BUILD)
-
-# export LIBPATHS	:=	$(CURDIR)/$(LIBDIRS)/libCTRPluginFramework.a
-
-# .PHONY: $(OUTPUT).3gx $(BUILD)
-
-# PORTLIBS	:=	$(PORTLIBS_PATH)/3ds
-
-# export PATH := $(PORTLIBS_PATH)/3ds/bin:$(PATH)
-
-# CTRULIB	?=	$(DEVKITPRO)/libctru
-
-# #---------------------------------------------------------------------------------
-
+3gx0002ctrpf080.elf: $(OFILES).o
+	$(SILENTMSG) linking $(notdir $@)
+	$(ADD_COMPILE_COMMAND) end
+	$(SILENTCMD)$(CXX) -T 3ds.ld $(ARCH) -Os -Wl,-Map,$(notdir $*.map),--gc-sections $(OFILES) -L Lib -lCTRPluginFramework -o $@
+	$(SILENTCMD)$(NM) -CSn $@ > $(notdir $*.lst)
 	
-# DEPENDS	:=	$(OFILES:.o=.d)
-
-# #---------------------------------------------------------------------------------
-# # main targets
-# #---------------------------------------------------------------------------------
-# $(OUTPUT).3gx : $(OFILES)
-# #---------------------------------------------------------------------------------
-# # you need a rule like this for each extension you use as binary data
-# #---------------------------------------------------------------------------------
-# %.bin.o	:	%.bin
-# #---------------------------------------------------------------------------------
-# 	@echo $(notdir $<)
-# 	@pwd
-# 	@cd $(BUILD)
-# 	@pwd
-# 	@$(bin2o)
-
-# #---------------------------------------------------------------------------------
-# %.elf:
-# 	@echo linking $(notdir $@)
-# 	@$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
-# 	@$(NM) -CSn $@ > $(notdir $*.lst)
-
-# %.3gx: %.elf
-# 	@ls
-# 	@echo 3gxの生成 $(word 1, $^)
-# #@3gxtool -s $(word 1, $^) $(TOPDIR)/$(PLGINFO) $@
-# 	@$(OBJCOPY) -O binary $@ $(TOPDIR)/objdump -S
-# 	@3gxtool -s $(TOPDIR)/objdump $(TOPDIR)/$(PLGINFO) $@
-# #	@- rm $(TOPDIR)/objdump
-
-# -include $(DEPENDS)
+3gx0002ctrpf080.3gx: %.elf

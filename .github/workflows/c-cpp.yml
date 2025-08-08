@@ -1,14 +1,13 @@
-name: さんじーえっくすのさくせい
+name: コンパイル
 
 on:
   push:
-    branches: [ main ]
+    branches: objects
 jobs:
   build:
 
     runs-on: ubuntu-latest
-    container: devkitpro/devkitarm
-
+    
     steps:
     - uses: actions/checkout@v4
       
@@ -19,4 +18,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: out
-        path: ./Build
+        path: ./
