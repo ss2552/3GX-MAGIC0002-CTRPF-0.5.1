@@ -32,13 +32,13 @@ CXXFLAGS  := -Os -mword-relocations \
 
 # アセンブリファイルのビルドルール
 $(OFILES).o: $(SFILES).s
-    @echo $(notdir $<)
-    arm-none-eabi-gcc -MMD -MP -MF $*.d -x assembler-with-cpp $(_EXTRADEFS) $(ARCH) -c $< -o $@
+	@echo $(notdir $<)
+	arm-none-eabi-gcc -MMD -MP -MF $*.d -x assembler-with-cpp $(_EXTRADEFS) $(ARCH) -c $< -o $@
 
 # C++ファイルのビルドルール
 $(OFILES).o: $(CPPFILES).cpp
-    @echo $(notdir $<)
-    arm-none-eabi-gcc -MMD -MP -MF $*.d $(_EXTRADEFS) $(CXXFLAGS) -c $< -o $@
+	@echo $(notdir $<)
+	arm-none-eabi-gcc -MMD -MP -MF $*.d $(_EXTRADEFS) $(CXXFLAGS) -c $< -o $@
 
 # リンカフラグ
 LDFLAGS		:=	-T 3ds.ld $(ARCH) -Os -Wl,-Map,$(notdir $*.map),--gc-sections
@@ -47,13 +47,13 @@ LIBS		:=	-lCTRPluginFramework  # リンクするライブラリ
 
 # ELFファイルのリンク
 3gx0002ctrpf080.elf: $(OFILES).o
-    @echo linking $(notdir $@)
-    arm-none-eabi-gcc $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
+	@echo linking $(notdir $@)
+	arm-none-eabi-gcc $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
     
 # 3GXファイルの生成
 3gx0002ctrpf080.3gx: 3gx0002ctrpf080.elf
-    @echo creating $(notdir $@)
+	@echo creating $(notdir $@)
 #	@$(OBJCOPY) -O binary 3gx0002ctrpf080.elf objdump -S
-    @3gxtool -s $< CTRPluginFramework.plgInfo $@
+	@3gxtool -s $< CTRPluginFramework.plgInfo $@
 
 -include $(DEPENDS)  # 依存関係ファイルをインクルード
