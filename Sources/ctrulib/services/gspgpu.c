@@ -91,7 +91,7 @@ Result gspInitEventHandler(Handle _gspEvent, vu8* _gspSharedMem, u8 gspThreadId)
 	gspEvent = _gspEvent;
 	gspEventData = _gspSharedMem + gspThreadId*0x40;
 	gspRunEvents = true;
-	 gspEventThread = threadCreate(gspEventThreadMain, (void *)0, GSP_EVENT_STACK_SIZE, g_gspEventThreadPriority, -2, true);
+	gspEventThread = threadCreate(gspEventThreadMain, 0x0, GSP_EVENT_STACK_SIZE, 0x31, -2, true); // gspEventThread = threadCreate(gspEventThreadMain, (void *)0, GSP_EVENT_STACK_SIZE, g_gspEventThreadPriority, -2, true);
 	return 0;
 }
 
