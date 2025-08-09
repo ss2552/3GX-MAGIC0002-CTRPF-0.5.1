@@ -1,36 +1,38 @@
 #include "3DS.h"
+#include "CTRPluginFramework/System/FwkSettings.hpp"
+#include "CTRPluginFrameworkImpl/System/ProcessImpl.hpp"
+#include "CTRPluginFrameworkImpl/System/MMU.hpp"
 
-extern char* fake_heap_start;
-extern char* fake_heap_end;
+namespace CTRPluginFramework
+{
+    extern "C" char *fake_heap_start;
+    extern "C" char *fake_heap_end;
 
-u32 __ctru_heap;
-u32 __ctru_heap_size;
-u32 __ctru_linear_heap;
-u32 __ctru_linear_heap_size;
+    extern "C" u32 __ctru_heap;
+    extern "C" u32 __ctru_heap_size;
 
-void __attribute__((weak)) __system_allocateHeaps(void) {
-	u32 tmp=0;
+    #define MEMPERM_RW ((MemPerm)(MEMPERM_READ | MEMPERM_WRITE))
 
-	if(envIsHomebrew()) {
-		// Use launcher-provided heap information.
-		__ctru_heap_size = envGetHeapSize();
-		__ctru_linear_heap_size = envGetLinearHeapSize();
-	} else {
-		// Distribute available memory into halves, aligning to page size.
-		u32 size = (osGetMemRegionFree(MEMREGION_APPLICATION) / 2) & 0xFFFFF000;
-		__ctru_heap_size = size;
-		__ctru_linear_heap_size = size;
-	}
+    static u32 Fail(u32 res)
+    {
+        return *(u32 *)0xDEADC0DE = res;
+    }
 
-	// Allocate the application heap
-	__ctru_heap = 0x08000000;
-	svcControlMemory(&tmp, __ctru_heap, 0x0, __ctru_heap_size, MEMOP_ALLOC, MEMPERM_READ | MEMPERM_WRITE);
+    extern "C" void   __system_allocateHeaps(void);
+    void __system_allocateHeaps(void)
+    {
+        // Heap params
+        __ctru_heap = FwkSettings::Header->heapVA;
+        __ctru_heap_size = FwkSettings::Header->heapSize - 0x2000;
 
-	// Allocate the linear heap
-	svcControlMemory(&__ctru_linear_heap, 0x0, 0x0, __ctru_linear_heap_size, MEMOP_ALLOC_LINEAR, MEMPERM_READ | MEMPERM_WRITE);
+        // Map Hook memory + shared page
+        Result res = svcMapProcessMemoryEx(CUR_PROCESS_HANDLE, 0x1E80000, CUR_PROCESS_HANDLE, __ctru_heap + __ctru_heap_size, 0x2000);
 
-	// Set up newlib heap
-	fake_heap_start = (char*)__ctru_heap;
-	fake_heap_end = fake_heap_start + __ctru_heap_size;
+        if (R_FAILED(res))
+            Fail(res);
 
+        // Set up newlib heap
+        fake_heap_start = reinterpret_cast<char*>(__ctru_heap);
+        fake_heap_end = fake_heap_start + __ctru_heap_size;
+    }
 }

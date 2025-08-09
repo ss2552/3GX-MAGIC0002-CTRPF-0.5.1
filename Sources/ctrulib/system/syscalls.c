@@ -3,11 +3,7 @@
 #include <sys/lock.h>
 #include <sys/reent.h>
 #include <string.h>
-
-#include "types.h"
-#include "ctrulib/svc.h"
-#include "ctrulib/env.h"
-#include "ctrulib/synchronization.h"
+#include "3DS.h"
 #include "ctrulib/internal.h"
 
 void __ctru_exit(int rc);
@@ -17,15 +13,31 @@ extern const u8 __tdata_lma[];
 extern const u8 __tdata_lma_end[];
 extern u8 __tls_start[];
 
-static struct _reent* __ctru_get_reent()
+static ThreadVars * g_mainThreadVars;
+
+static struct _reent* __ctru_get_reent(void)
 {
 	ThreadVars* tv = getThreadVars();
+
 	if (tv->magic != THREADVARS_MAGIC)
 	{
-		svcBreak(USERBREAK_PANIC);
-		for (;;);
+		// We're probably hooked from game so get main thread's reent
+		return (g_mainThreadVars->reent);
 	}
 	return tv->reent;
+}
+
+void*     __getThreadLocalStorage(void)
+{
+	ThreadVars* tv = getThreadVars();
+
+	if (tv->magic != THREADVARS_MAGIC)
+	{
+        // We're probably hooked from game so get main thread's tls
+        return g_mainThreadVars->tls_tp;
+	}
+
+	return tv->tls_tp;
 }
 
 void __system_initSyscalls(void)
@@ -51,6 +63,8 @@ void __system_initSyscalls(void)
 	tv->reent = _impure_ptr;
 	tv->thread_ptr = NULL;
 	tv->tls_tp = __tls_start-8; // ARM ELF TLS ABI mandates an 8-byte header
+
+    g_mainThreadVars = tv;
 
 	u32 tls_size = __tdata_lma_end - __tdata_lma;
 	if (tls_size)
