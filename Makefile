@@ -7,7 +7,7 @@ $(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>dev
 endif
 
 TOPDIR ?= $(CURDIR)
-include 3ds_rules
+include $(DEVKITARM)/base_rules
 
 TARGET		:= 	$(notdir $(CURDIR))
 BUILD		:= 	Build
@@ -115,6 +115,12 @@ $(OUTPUT).3gx : $(OFILES) $(LIBOUT)
 $(LIBOUT):	$(filter-out $(EXCLUDE), $(OFILES))
 
 #---------------------------------------------------------------------------------
+%.elf:
+	$(SILENTMSG) linking $(notdir $@)
+	$(ADD_COMPILE_COMMAND) end
+	$(SILENTCMD)$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
+	$(SILENTCMD)$(NM) -CSn $@ > $(notdir $*.lst)
+
 %.3gx: %.elf
 	@echo creating $(notdir $@)
 	@$(OBJCOPY) -O binary $(OUTPUT).elf $(TOPDIR)/objdump -S
