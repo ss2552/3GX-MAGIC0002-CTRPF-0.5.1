@@ -1,57 +1,127 @@
-#コメントアウトはgithub copilotを使用した
+#---------------------------------------------------------------------------------
+.SUFFIXES:
+#---------------------------------------------------------------------------------
 
-include base_tools
+ifeq ($(strip $(DEVKITARM)),)
+$(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM")
+endif
 
-# ソースディレクトリのリスト
-SOURCES		:=	Sources \
-	Lib Lib/ctrulib Lib/ctrulib/allocator Lib/ctrulib/gpu Lib/ctrulib/services Lib/ctrulib/system Lib/ctrulib/util/utf Lib/ctrulib/util/rbtree
-# 各ディレクトリ内の.cppファイルを取得
-CPPFILES	:=	$(foreach dir,$(SOURCES),$(wildcard $(dir)/*.cpp))
-# 各ディレクトリ内の.sファイルを取得
-SFILES		:=	$(foreach dir,$(SOURCES),$(wildcard $(dir)/*.s))
+TOPDIR ?= $(CURDIR)
+include $(DEVKITARM)/3ds_rules
 
-OUTPUT	:=	Build  # 出力ディレクトリ
+TARGET		:= 	$(notdir $(CURDIR))
+BUILD		:= 	Build
+INCLUDES	:= 	Includes \
+				Includes\ctrulib \
+				Includes\ctrulib\allocator \
+				Includes\ctrulib\gpu \
+				Includes\ctrulib\services \
+				Includes\ctrulib\util
+SOURCES 	:= 	Sources \
+				Sources\CTRPluginFramework \
+				Sources\CTRPluginFramework\Graphics \
+				Sources\CTRPluginFramework\Menu \
+				Sources\CTRPluginFramework\System \
+				Sources\CTRPluginFramework\Utils \
+				Sources\CTRPluginFrameworkImpl \
+				Sources\CTRPluginFrameworkImpl\ActionReplay \
+				Sources\CTRPluginFrameworkImpl\Disassembler \
+				Sources\CTRPluginFrameworkImpl\Graphics \
+				Sources\CTRPluginFrameworkImpl\Graphics\Icons \
+				Sources\CTRPluginFrameworkImpl\Menu \
+				Sources\CTRPluginFrameworkImpl\Search \
+				Sources\CTRPluginFrameworkImpl\System \
+				Sources\ctrulib \
+				Sources\ctrulib\allocator \
+				Sources\ctrulib\gpu \
+				Sources\ctrulib\services \
+				Sources\ctrulib\system \
+				Sources\ctrulib\util\utf \
+				Sources\ctrulib\util\rbtree
 
-# オブジェクトファイルと依存ファイルのリスト
-OFILES	:=	$(CPPFILES:.cpp=.o) $(SFILES:.s=.o)
+PSF 		:= 	$(notdir $(TOPDIR)).plgInfo
 
-.PHONY: all  # allターゲットはファイルではないことを明示
-all: 3gx0002ctrpf080.3gx  # デフォルトターゲット
+#---------------------------------------------------------------------------------
+# options for code generation
+#---------------------------------------------------------------------------------
+ARCH	:=	-march=armv6k -mlittle-endian -mtune=mpcore -mfloat-abi=hard
 
-# ARMアーキテクチャ用のコンパイルオプション
-ARCH      := -march=armv6k -mlittle-endian -mtune=mpcore -mfloat-abi=hard
+CFLAGS	:=	-g -Os -mword-relocations \
+ 			-fomit-frame-pointer -ffunction-sections -fno-strict-aliasing \
+			$(ARCH)
 
-# C++コンパイルフラグ
-CXXFLAGS  := -Os -mword-relocations \
-            -fomit-frame-pointer -ffunction-sections -fno-strict-aliasing \
-            $(ARCH) \
-            -I Includes -I Includes/ctrulib -I Includes/ctrulib/allocator -I Includes/ctrulib/gpu -I Includes/ctrulib/services -I Includes/ctrulib/system -I Includes/ctrulib/util/utf -I Includes/ctrulib/util/rbtree \
-            -DARM11 -D__3DS__ \
-            -fno-rtti -fno-exceptions -std=gnu++11
+CFLAGS		+=	$(INCLUDE) -DARM11 -D_3DS
+#-Wall -Wextra -Wdouble-promotion -Werror
 
-# アセンブリファイルのビルドルール
-%.o: %.s
-	@echo $(CURDIR)/$(notdir $<)
-	@arm-none-eabi-gcc -MMD -MP -MF -x assembler-with-cpp $(_EXTRADEFS) $(ARCH) -c $< -o $(OUTPUT)/$@ $(ERROR_FILTER)
+CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
 
-# C++ファイルのビルドルール
-%.o: %.cpp
-	@echo $(CURDIR)/$(notdir $<)
-	@arm-none-eabi-g++ -MMD -MP -MF $(_EXTRADEFS) $(CXXFLAGS) -c $< -o $(OUTPUT)/$@ $(ERROR_FILTER)
+ASFLAGS		:= -g $(ARCH)
+LDFLAGS		:= -T $(TOPDIR)/3ds.ld $(ARCH) -Os -Wl,-Map,$(notdir $*.map),--gc-sections,--strip-discarded,--strip-debug
+#LDFLAGS := -pie -specs=3dsx.specs -g $(ARCH) -mtp=soft -Wl,--section-start,.text=0x14000000 -Wl,--gc-sections
 
-# リンカフラグ
-LDFLAGS		:=	-T 3ds.ld $(ARCH) -Os -Wl,-Map,$(notdir $*.map),--gc-sections
-LIBPATHS	:=	-L Lib  # ライブラリパス
-LIBS		:=	-lCTRPluginFramework  # リンクするライブラリ
+LIBS 		:= 	-lctru -lm
+LIBDIRS		:= 	$(CTRULIB)
 
-# ELFファイルのリンク
-3gx0002ctrpf080.elf: $(OFILES)
-	@echo linking $(CURDIR)/$(notdir $@)
-	@ls
-	@arm-none-eabi-gcc $(LDFLAGS) $< $(LIBPATHS) $(LIBS) -o $(OUTPUT)/3gx0002ctrpf080.elf $(ERROR_FILTER)
-	
-# 3GXファイルの生成
-3gx0002ctrpf080.3gx: 3gx0002ctrpf080.elf
-	@echo creating $(CURDIR)/$(notdir $@)
-#	@$(OBJCOPY) -O binary 3gx0002ctrpf080.elf objdump -S
-	@3gxtool -s $(OUTPUT)/3gx0002ctrpf080.elf $(CURDIR)/CTRPluginFramework.plgInfo $(OUTPUT)/3gx0002ctrpf080.3gx
+#---------------------------------------------------------------------------------
+# no real need to edit anything past this point unless you need to add additional
+# rules for different file extensions
+#---------------------------------------------------------------------------------
+ifneq ($(BUILD),$(notdir $(CURDIR)))
+#---------------------------------------------------------------------------------
+
+export OUTPUT	:=	$(CURDIR)/$(TARGET)
+export LIBOUT	:=  $(CURDIR)/lib$(TARGET).a
+export TOPDIR	:=	$(CURDIR)
+
+export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
+					$(foreach dir,$(DATA),$(CURDIR)/$(dir))
+
+export DEPSDIR	:=	$(CURDIR)/$(BUILD)
+
+CFILES			:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
+CPPFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
+SFILES			:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
+
+export LD 		:= 	$(CXX)
+export OFILES	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
+
+export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
+					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
+					-I$(CURDIR)/$(BUILD)
+
+export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L $(dir)/lib)
+
+.PHONY: $(BUILD) all
+
+#---------------------------------------------------------------------------------
+all: $(BUILD)
+
+$(BUILD):
+	@[ -d $@ ] || mkdir -p $@
+	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+#---------------------------------------------------------------------------------
+
+else
+
+#---------------------------------------------------------------------------------
+# main targets
+#---------------------------------------------------------------------------------
+
+DEPENDS	:=	$(OFILES:.o=.d)
+EXCLUDE := main.o
+
+
+$(OUTPUT).3gx : $(OFILES) $(LIBOUT)
+$(LIBOUT):	$(filter-out $(EXCLUDE), $(OFILES))
+
+#---------------------------------------------------------------------------------
+%.3gx: %.elf
+	@echo creating $(notdir $@)
+	@$(OBJCOPY) -O binary $(OUTPUT).elf $(TOPDIR)/objdump -S
+	@3gxtool.exe -s $(TOPDIR)/objdump $(TOPDIR)/$(PSF) $@
+
+-include $(DEPENDS)
+
+#---------------------------------------------------------------------------------------
+endif
+#---------------------------------------------------------------------------------------
