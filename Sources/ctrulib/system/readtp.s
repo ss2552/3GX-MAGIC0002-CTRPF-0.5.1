@@ -4,4 +4,6 @@
 .type __aeabi_read_tp, %function
 .align 2
 __aeabi_read_tp:
-	b	__getThreadLocalStorage
+	mrc p15, 0, r0, c13, c0, 3
+	ldr r0, [r0, #0xC] @ Read ThreadVars.tls_tp
+	bx lr

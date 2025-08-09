@@ -4,12 +4,6 @@
 
 #include "3DS.h"
 
-u32 __tmp;
-u32 __ctru_heap;
-u32 __ctru_heap_size;
-u32 __ctru_linear_heap;
-u32 __ctru_linear_heap_size;
-
 void (*__system_retAddr)(void);
 
 void __system_initSyscalls(void);
@@ -19,21 +13,20 @@ void __appInit(void);
 
 Result __sync_init(void);
 
-void __libctru_init(void)
+void __attribute__((weak)) __libctru_init(void (*retAddr)(void))
 {
-    return;
 	// Store the return address
-	//__system_retAddr = NULL;//envIsHomebrew() ? retAddr : NULL;
+	__system_retAddr = envIsHomebrew() ? retAddr : NULL;
 
 	// Initialize the synchronization subsystem
-	//__sync_init();
+	__sync_init();
 
 	// Initialize newlib support system calls
-	//__system_initSyscalls();
+	__system_initSyscalls();
 
 	// Allocate application and linear heaps
 	__system_allocateHeaps();
 
 	// Build argc/argv if present
-	//__system_initArgv();
+	__system_initArgv();
 }
