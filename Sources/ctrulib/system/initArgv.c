@@ -1,4 +1,5 @@
-#include "3DS.h"
+#include "types.h"
+#include "ctrulib/env.h"
 
 #include <string.h>
 

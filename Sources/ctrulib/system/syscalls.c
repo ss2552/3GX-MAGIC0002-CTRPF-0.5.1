@@ -4,7 +4,10 @@
 #include <sys/reent.h>
 #include <string.h>
 
-#include "3DS.h"
+#include "types.h"
+#include "ctrulib/svc.h"
+#include "ctrulib/env.h"
+#include "ctrulib/synchronization.h"
 #include "ctrulib/internal.h"
 
 void __ctru_exit(int rc);

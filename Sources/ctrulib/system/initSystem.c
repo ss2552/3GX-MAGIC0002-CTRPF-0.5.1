@@ -2,7 +2,9 @@
 #include <sys/time.h>
 #include <string.h>
 
-#include "3DS.h"
+#include "types.h"
+#include "ctrulib/svc.h"
+#include "ctrulib/env.h"
 
 void (*__system_retAddr)(void);
 

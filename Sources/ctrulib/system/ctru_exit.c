@@ -1,4 +1,6 @@
-#include "3DS.h"
+#include "types.h"
+#include "ctrulib/svc.h"
+#include "ctrulib/env.h"
 
 extern u32 __ctru_heap;
 extern u32 __ctru_heap_size;
