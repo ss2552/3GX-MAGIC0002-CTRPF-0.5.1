@@ -8,7 +8,7 @@
 #include "CTRPluginFramework/Graphics/Color.hpp"
 #include "CTRPluginFramework/System/Clock.hpp"
 #include "CTRPluginFrameworkImpl/Graphics/FloatingButton.hpp"
-#include "Sources/ctrulib/internal.h"
+#include "ctrulib/internal.h"
 
 #include <string>
 #include <list>

@@ -13,7 +13,7 @@ SOUCES_DIR		:=	Sources
 
 TARGET		:= 	$(notdir $(CURDIR))
 BUILD		:= 	Build
-INCLUDES	:= 	$(SOUCES_DIR) Includes Includes/ctrulib Includes/ctrulib/allocator Includes/ctrulib/gpu Includes/ctrulib/services Includes/ctrulib/util
+INCLUDES	:= 	$(SOUCES_DIR) $(SOUCES_DIR)/ctrulib Includes Includes/ctrulib Includes/ctrulib/allocator Includes/ctrulib/gpu Includes/ctrulib/services Includes/ctrulib/util
 
 CTRPF_DIR		:=	$(SOUCES_DIR)/CTRPluginFramework
 CTRPFIMPL_DIR	:=	$(SOUCES_DIR)/CTRPluginFrameworkImpl
