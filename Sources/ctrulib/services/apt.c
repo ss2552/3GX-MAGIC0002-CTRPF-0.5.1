@@ -242,7 +242,8 @@ Result aptInit(void)
 	LightEvent_Init(&aptSleepEvent, RESET_STICKY);
 
 	// Create APT event handler thread
-	aptEventHandlerThread = threadCreate((ThreadFunc)aptEventHandler, 0x0, __stack, APT_HANDLER_STACKSIZE, 0x31, -2);
+	//aptEventHandlerThread = threadCreate((ThreadFunc)aptEventHandler, 0x0, __stack, APT_HANDLER_STACKSIZE, 0x31, -2);
+	aptEventHandlerThread = threadCreate(aptEventHandler, 0x0, APT_HANDLER_STACKSIZE, 0x31, -2, true);
 	if (!aptEventHandlerThread) goto _fail4;
 
 	// Special handling for aptReinit (aka hax)

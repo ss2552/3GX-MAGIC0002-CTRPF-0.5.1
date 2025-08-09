@@ -9,7 +9,7 @@
 
 namespace CTRPluginFramework
 {
-    #define MEMPERM_RW (MEMPERM_READ | MEMPERM_WRITE)
+    // #define MEMPERM_RW (MEMPERM_READ | MEMPERM_WRITE)
     #define MEMPERM_RWX (MEMPERM_RW | MEMPERM_EXECUTE)
 
     static inline bool      operator<(const MemInfo& left, const MemInfo& right)
