@@ -2,7 +2,7 @@
 #include "ctrulib/util/utf.h"
 #include "ctrulib/font.h"
 #include "CTRPluginFrameworkImpl/Preferences.hpp"
-#include "CTRPluginFrameworkImpl/Graphics/Textbox.hpp"
+#include "CTRPluginFrameworkImpl/Graphics/TextBox.hpp"
 #include "CTRPluginFrameworkImpl/Graphics/Renderer.hpp"
 #include "CTRPluginFramework/System/Clock.hpp"
 #include <cmath>
