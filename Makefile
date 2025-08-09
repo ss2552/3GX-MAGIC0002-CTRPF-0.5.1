@@ -11,33 +11,12 @@ include $(DEVKITARM)/base_rules
 
 TARGET		:= 	$(notdir $(CURDIR))
 BUILD		:= 	Build
-INCLUDES	:= 	Includes \
-				Includes\ctrulib \
-				Includes\ctrulib\allocator \
-				Includes\ctrulib\gpu \
-				Includes\ctrulib\services \
-				Includes\ctrulib\util
-SOURCES 	:= 	Sources \
-				Sources\CTRPluginFramework \
-				Sources\CTRPluginFramework\Graphics \
-				Sources\CTRPluginFramework\Menu \
-				Sources\CTRPluginFramework\System \
-				Sources\CTRPluginFramework\Utils \
-				Sources\CTRPluginFrameworkImpl \
-				Sources\CTRPluginFrameworkImpl\ActionReplay \
-				Sources\CTRPluginFrameworkImpl\Disassembler \
-				Sources\CTRPluginFrameworkImpl\Graphics \
-				Sources\CTRPluginFrameworkImpl\Graphics\Icons \
-				Sources\CTRPluginFrameworkImpl\Menu \
-				Sources\CTRPluginFrameworkImpl\Search \
-				Sources\CTRPluginFrameworkImpl\System \
-				Sources\ctrulib \
-				Sources\ctrulib\allocator \
-				Sources\ctrulib\gpu \
-				Sources\ctrulib\services \
-				Sources\ctrulib\system \
-				Sources\ctrulib\util\utf \
-				Sources\ctrulib\util\rbtree
+INCLUDES	:= 	Includes Includes/ctrulib Includes/ctrulib/allocator Includes/ctrulib/gpu Includes/ctrulib/services Includes/ctrulib/util
+
+SOUCES_DIR		:=	Sources
+CTRPF_DIR		:=	$(SOUCES_DIR)/CTRPluginFramework
+CTRPFIMPL_DIR	:=	$(SOUCES_DIR)/CTRPluginFrameworkImpl
+SOURCES 		:= 	$(SOUCES_DIR) $(CTRPF_DIR) $(CTRPF_DIR)/Graphics $(CTRPF_DIR)/Menu $(CTRPF_DIR)/System $(CTRPF_DIR)/Utils $(CTRPFIMPL_DIR) $(CTRPFIMPL_DIR)/ActionReplay $(CTRPFIMPL_DIR)/Disassembler $(CTRPFIMPL_DIR)/Graphics $(CTRPFIMPL_DIR)/Graphics\Icons $(CTRPFIMPL_DIR)/Menu $(CTRPFIMPL_DIR)/Search $(CTRPFIMPL_DIR)/System $(SOUCES_DIR)/ctrulib $(SOUCES_DIR)/ctrulib/allocator $(SOUCES_DIR)/ctrulib/gpu $(SOUCES_DIR)/ctrulib/services $(SOUCES_DIR)/ctrulib/system $(SOUCES_DIR)/ctrulib/util/utf $(SOUCES_DIR)/ctrulib/util/rbtree
 				
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -78,8 +57,7 @@ SFILES			:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 export LD 		:= 	$(CXX)
 export OFILES	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
 
-export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
-					-I$(CURDIR)/$(BUILD)
+export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir))  	-I$(CURDIR)/$(BUILD)
 					
 .PHONY: $(BUILD) all
 
@@ -106,7 +84,7 @@ $(OUTPUT).3gx : $(OFILES)
 	$(SILENTMSG) linking $(notdir $@)
 	$(ADD_COMPILE_COMMAND) end
 	$(SILENTCMD)$(LD) $(LDFLAGS) $(OFILES) -o $@
-	$(SILENTCMD)$(NM) -CSn $@ > $(notdir $*.lst)
+#	$(SILENTCMD)$(NM) -CSn $@ > $(notdir $*.lst)
 
 %.3gx: %.elf
 	@echo creating $(notdir $@)
