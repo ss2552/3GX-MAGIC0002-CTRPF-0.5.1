@@ -29,8 +29,8 @@ static vu8* gspEventData;
 Handle gspEvent, gspSharedMemHandle;
 static void gspEventThreadMain(u32 arg);
 
-Handle gspThreadEventHandle;
-u32     g_gspEventThreadPriority;
+// Handle gspThreadEventHandle;
+// u32     g_gspEventThreadPriority;
 //static char gspThreadEventStack[GSP_EVENT_STACK_SIZE] ALIGN(8);
 Thread gspEventThread;
 
@@ -176,7 +176,7 @@ static int popInterrupt()
 	return curEvt;
 }
 
-void gspEventThreadMain(u32 arg)
+void gspEventThreadMain(u32 *arg)
 {
 	while (gspRunEvents)
 	{
