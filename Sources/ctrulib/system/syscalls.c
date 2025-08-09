@@ -4,7 +4,7 @@
 #include <sys/reent.h>
 #include <string.h>
 #include <3DS.h>
-#include "Sources/ctrulib/internal.h
+#include "ctrulib/internal.h
 
 void __ctru_exit(int rc);
 int __libctru_gtod(struct _reent *ptr, struct timeval *tp, struct timezone *tz);
