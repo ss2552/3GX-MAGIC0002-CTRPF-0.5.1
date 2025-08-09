@@ -26,7 +26,7 @@ INCLUDES	:= 	$(SOURCES_DIR) $(SOURCES_DIR)/ctrulib Includes Includes/ctrulib Inc
 CTRPF_DIR		:=	$(SOURCES_DIR)/CTRPluginFramework
 CTRPFIMPL_DIR	:=	$(SOURCES_DIR)/CTRPluginFrameworkImpl
 # ソースファイル探索ディレクトリ一覧
-SOURCES 		:= 	$(SOURCES_DIR) $(CTRPF_DIR) $(CTRPF_DIR)/Graphics $(CTRPF_DIR)/Menu $(CTRPF_DIR)/System $(CTRPF_DIR)/Utils $(CTRPFIMPL_DIR) $(CTRPFIMPL_DIR)/ActionReplay $(CTRPFIMPL_DIR)/Disassembler $(CTRPFIMPL_DIR)/Graphics $(CTRPFIMPL_DIR)/Graphics\Icons $(CTRPFIMPL_DIR)/Menu $(CTRPFIMPL_DIR)/Search $(CTRPFIMPL_DIR)/System $(SOURCES_DIR)/ctrulib $(SOURCES_DIR)/ctrulib/allocator $(SOURCES_DIR)/ctrulib/gpu $(SOURCES_DIR)/ctrulib/services $(SOURCES_DIR)/ctrulib/system $(SOURCES_DIR)/ctrulib/util/utf $(SOURCES_DIR)/ctrulib/util/rbtree
+SOURCES 		:= 	$(SOURCES_DIR) $(CTRPF_DIR) $(CTRPF_DIR)/Graphics $(CTRPF_DIR)/Menu $(CTRPF_DIR)/System $(CTRPF_DIR)/Utils $(CTRPFIMPL_DIR) $(CTRPFIMPL_DIR)/ActionReplay $(CTRPFIMPL_DIR)/Disassembler $(CTRPFIMPL_DIR)/Graphics $(CTRPFIMPL_DIR)/Graphics/Icons $(CTRPFIMPL_DIR)/Menu $(CTRPFIMPL_DIR)/Search $(CTRPFIMPL_DIR)/System $(SOURCES_DIR)/ctrulib $(SOURCES_DIR)/ctrulib/allocator $(SOURCES_DIR)/ctrulib/gpu $(SOURCES_DIR)/ctrulib/services $(SOURCES_DIR)/ctrulib/system $(SOURCES_DIR)/ctrulib/util/utf $(SOURCES_DIR)/ctrulib/util/rbtree
                 
 #---------------------------------------------------------------------------------
 # コード生成オプション
