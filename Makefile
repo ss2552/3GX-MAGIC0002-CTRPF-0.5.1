@@ -38,9 +38,7 @@ SOURCES 	:= 	Sources \
 				Sources\ctrulib\system \
 				Sources\ctrulib\util\utf \
 				Sources\ctrulib\util\rbtree
-
-PSF 		:= 	CTRPluginFramework.plgInfo
-
+				
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
@@ -59,9 +57,6 @@ ASFLAGS		:= -g $(ARCH)
 LDFLAGS		:= -T $(TOPDIR)/3ds.ld $(ARCH) -Os -Wl,-Map,$(notdir $*.map),--gc-sections,--strip-discarded,--strip-debug
 #LDFLAGS := -pie -specs=3dsx.specs -g $(ARCH) -mtp=soft -Wl,--section-start,.text=0x14000000 -Wl,--gc-sections
 
-LIBS 		:= 	-lctru -lm
-LIBDIRS		:= 	$(CTRULIB)
-
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
 # rules for different file extensions
@@ -70,11 +65,9 @@ ifneq ($(BUILD),$(notdir $(CURDIR)))
 #---------------------------------------------------------------------------------
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
-export LIBOUT	:=  $(CURDIR)/lib$(TARGET).a
 export TOPDIR	:=	$(CURDIR)
 
 export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
-					$(foreach dir,$(DATA),$(CURDIR)/$(dir))
 
 export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 
@@ -86,11 +79,8 @@ export LD 		:= 	$(CXX)
 export OFILES	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
 
 export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
-					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
 					-I$(CURDIR)/$(BUILD)
-
-export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L $(dir)/lib)
-
+					
 .PHONY: $(BUILD) all
 
 #---------------------------------------------------------------------------------
@@ -108,23 +98,20 @@ else
 #---------------------------------------------------------------------------------
 
 DEPENDS	:=	$(OFILES:.o=.d)
-EXCLUDE := main.o
 
-
-$(OUTPUT).3gx : $(OFILES) $(LIBOUT)
-$(LIBOUT):	$(filter-out $(EXCLUDE), $(OFILES))
+$(OUTPUT).3gx : $(OFILES)
 
 #---------------------------------------------------------------------------------
 %.elf:
 	$(SILENTMSG) linking $(notdir $@)
 	$(ADD_COMPILE_COMMAND) end
-	$(SILENTCMD)$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
+	$(SILENTCMD)$(LD) $(LDFLAGS) $(OFILES) -o $@
 	$(SILENTCMD)$(NM) -CSn $@ > $(notdir $*.lst)
 
 %.3gx: %.elf
 	@echo creating $(notdir $@)
 	@$(OBJCOPY) -O binary $(OUTPUT).elf $(TOPDIR)/objdump -S
-	@3gxtool.exe -s $(TOPDIR)/objdump $(TOPDIR)/$(PSF) $@
+	@3gxtool.exe -s $(TOPDIR)/objdump $(TOPDIR)/CTRPluginFramework.plgInfo $@
 
 -include $(DEPENDS)
 
