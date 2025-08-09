@@ -6,7 +6,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "../types.h"
+#include "types.h"
 //#define BIT(x) (1U << x)
 /// IPC buffer access rights.
 typedef enum

@@ -7,7 +7,7 @@
 #include <ctrulib/services/fs.h>
 #include <ctrulib/ipc.h>
 #include <ctrulib/env.h>
-#include "../internal.h"
+#include "Sources/ctrulib/internal.h
 
 #define FS_MAX_EXEMPT_ARCHIVE_HANDLES 16
 

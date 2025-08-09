@@ -9,11 +9,12 @@ endif
 TOPDIR ?= $(CURDIR)
 include $(DEVKITARM)/base_rules
 
+SOUCES_DIR		:=	Sources
+
 TARGET		:= 	$(notdir $(CURDIR))
 BUILD		:= 	Build
-INCLUDES	:= 	Includes Includes/ctrulib Includes/ctrulib/allocator Includes/ctrulib/gpu Includes/ctrulib/services Includes/ctrulib/util
+INCLUDES	:= 	$(SOUCES_DIR) Includes Includes/ctrulib Includes/ctrulib/allocator Includes/ctrulib/gpu Includes/ctrulib/services Includes/ctrulib/util
 
-SOUCES_DIR		:=	Sources
 CTRPF_DIR		:=	$(SOUCES_DIR)/CTRPluginFramework
 CTRPFIMPL_DIR	:=	$(SOUCES_DIR)/CTRPluginFrameworkImpl
 SOURCES 		:= 	$(SOUCES_DIR) $(CTRPF_DIR) $(CTRPF_DIR)/Graphics $(CTRPF_DIR)/Menu $(CTRPF_DIR)/System $(CTRPF_DIR)/Utils $(CTRPFIMPL_DIR) $(CTRPFIMPL_DIR)/ActionReplay $(CTRPFIMPL_DIR)/Disassembler $(CTRPFIMPL_DIR)/Graphics $(CTRPFIMPL_DIR)/Graphics\Icons $(CTRPFIMPL_DIR)/Menu $(CTRPFIMPL_DIR)/Search $(CTRPFIMPL_DIR)/System $(SOUCES_DIR)/ctrulib $(SOUCES_DIR)/ctrulib/allocator $(SOUCES_DIR)/ctrulib/gpu $(SOUCES_DIR)/ctrulib/services $(SOUCES_DIR)/ctrulib/system $(SOUCES_DIR)/ctrulib/util/utf $(SOUCES_DIR)/ctrulib/util/rbtree

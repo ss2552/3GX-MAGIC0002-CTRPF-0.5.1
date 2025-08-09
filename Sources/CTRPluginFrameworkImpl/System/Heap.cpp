@@ -7,8 +7,8 @@ extern "C"
     #include "ctrulib/util/rbtree.h"
 }
 
-#include "../../ctrulib/allocator/mem_pool.h"
-#include "../../ctrulib/allocator/addrmap.h"
+#include "ctrulib/allocator/mem_pool.h"
+#include "ctrulib/allocator/addrmap.h"
 #include "CTRPluginFrameworkImpl/System/Heap.hpp"
 
 #include <cstring>

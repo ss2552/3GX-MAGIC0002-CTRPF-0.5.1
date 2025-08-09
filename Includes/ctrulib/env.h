@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 #include <string.h>
-#include "../types.h"
+#include "types.h"
 
 /// System run-flags.
 enum {

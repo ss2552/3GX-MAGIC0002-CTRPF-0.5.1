@@ -6,7 +6,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "../../types.h"
+#include "types.h"
 /**
  * @brief Creates a buffer dimension parameter from width and height values.
  * @param w buffer width for GX_DisplayTransfer, linesize for GX_TextureCopy

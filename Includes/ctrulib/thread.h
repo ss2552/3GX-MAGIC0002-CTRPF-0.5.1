@@ -6,7 +6,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "../types.h"
+#include "types.h"
 #include "result.h"
 #include "synchronization.h"
 #include "svc.h"

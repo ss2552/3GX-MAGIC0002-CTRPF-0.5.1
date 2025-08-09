@@ -3,7 +3,7 @@
 #include "CTRPluginFrameworkImpl/Menu/MenuItem.hpp"
 #include "CTRPluginFrameworkImpl/Menu/MenuEntryImpl.hpp"
 #include "CTRPluginFrameworkImpl/Menu/PluginMenuExecuteLoop.hpp"
-#include "../../OSDManager.hpp"
+#include "OSDManager.hpp"
 
 namespace CTRPluginFramework
 {

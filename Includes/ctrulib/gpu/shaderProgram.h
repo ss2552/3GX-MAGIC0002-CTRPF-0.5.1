@@ -6,7 +6,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "../../types.h"
+#include "types.h"
 #include "shbin.h"
 
 /// 24-bit float uniforms.

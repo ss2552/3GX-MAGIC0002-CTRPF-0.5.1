@@ -6,7 +6,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "../types.h"
+#include "types.h"
 /// Packs a system version from its components.
 #define SYSTEM_VERSION(major, minor, revision) \
 	(((major)<<24)|((minor)<<16)|((revision)<<8))

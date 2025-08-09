@@ -6,7 +6,7 @@
 #include "CTRPluginFrameworkImpl/Graphics/Renderer.hpp"
 #include "CTRPluginFramework/System/Clock.hpp"
 #include <cmath>
-#include "../../OSDManager.hpp"
+#include "OSDManager.hpp"
 
 namespace CTRPluginFramework
 {

@@ -12,7 +12,7 @@
 #include <cctype>
 #include <cstring>
 #include "CTRPluginFramework/Menu/MessageBox.hpp"
-#include "../../OSDManager.hpp"
+#include "OSDManager.hpp"
 #include "CTRPluginFrameworkImpl/Preferences.hpp"
 
 #undef DEBUG
