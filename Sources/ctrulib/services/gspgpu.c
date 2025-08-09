@@ -27,7 +27,7 @@ static u8 *gfxSharedMemory;
 
 static vu8* gspEventData;
 Handle gspEvent, gspSharedMemHandle;
-static void gspEventThreadMain(u32 arg);
+static void gspEventThreadMain(u32 *arg);
 
 // Handle gspThreadEventHandle;
 // u32     g_gspEventThreadPriority;
